@@ -4,11 +4,7 @@ This program is a simple demonstration of CRUD (Create, Read, Update, and Delete
 
 How to Run
 Make sure you have Node.js installed on your computer.
-
 Open a terminal or command prompt.
-
 Navigate to the exp-1 folder in your repository.
-
 Run the program using the command: node crud.js
-
 The output, which shows the array's state at each step, will be displayed directly in the terminal. 
