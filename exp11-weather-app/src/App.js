@@ -1,28 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
-  const [weather, setWeather] = useState({
-    city: "Goa",
-    temperature: "31°C",
-    condition: "Sunny ☀️",
-    humidity: "60%",
-    wind: "12 km/h",
-  });
+  const [city, setCity] = useState("Goa"); // default city
+  const [weather, setWeather] = useState(null);
+
+  const API_KEY = "997a2a39c5c0562f0ebbfc00a926efb5"; // ✅ your key
+
+  const getWeather = async () => {
+    if (!city) {
+      alert("Please enter a city name!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+      );
+
+      if (!response.ok) {
+        alert("City not found! Please try again.");
+        return;
+      }
+
+      const data = await response.json();
+      setWeather(data);
+    } catch (error) {
+      alert("Error fetching weather data. Please check your connection.");
+    }
+  };
+
+  // ✅ Automatically fetch weather for Goa on page load
+  useEffect(() => {
+    getWeather();
+  }, []);
 
   return (
     <div className="app">
-      <h1>🌦 Weather App</h1>
-      <div className="card">
-        <h2>{weather.city}</h2>
-        <h3>{weather.condition}</h3>
-        <p>🌡 Temperature: {weather.temperature}</p>
-        <p>💧 Humidity: {weather.humidity}</p>
-        <p>💨 Wind: {weather.wind}</p>
-      </div>
-      <p style={{ marginTop: "20px", fontSize: "14px", color: "#888" }}>
-        (Offline sample data for project demo)
-      </p>
+      <h1>🌤️ Weather App</h1>
+
+      <input
+        type="text"
+        placeholder="Enter city name..."
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
+
+      <button onClick={getWeather}>Get Weather</button>
+
+      {weather && (
+        <div className="weather-info">
+          <h2>
+            {weather.name}, {weather.sys.country}
+          </h2>
+          <p>🌡️ Temperature: {weather.main.temp} °C</p>
+          <p>☁️ Condition: {weather.weather[0].description}</p>
+          <p>💨 Wind Speed: {weather.wind.speed} m/s</p>
+        </div>
+      )}
     </div>
   );
 }
